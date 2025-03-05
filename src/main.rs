@@ -1,3 +1,5 @@
+use solana_sdk::system_program;
+use solana_sdk::instruction::AccountMeta;
 use rand::Rng;
 use solana_client::rpc_client::RpcClient;
 use solana_sdk::{
@@ -22,7 +24,7 @@ fn main() {
         .expect("Failed to read payer keypair file");
 
     // Receiver's public key
-    let receiver_pubkey_str = "RECEIVER_PUBLIC_KEY_HERE"; // Replace with your receiver's public key
+    let receiver_pubkey_str = "3KwfmvwNvirudqezF8RXZ9mbeLj8xamFzjYurJytiEFy"; // Replace with your receiver's public key
     let receiver_pubkey =
         Pubkey::from_str(receiver_pubkey_str).expect("Failed to parse receiver public key");
 
@@ -73,8 +75,9 @@ fn main() {
             &amount_le_bytes,
             vec![
                 // Accounts expected by the smart contract
-                solana_sdk::account_meta::AccountMeta::new(payer.pubkey(), true), // Payer (signer)
-                solana_sdk::account_meta::AccountMeta::new(receiver_pubkey, false), // Receiver
+                AccountMeta::new(payer.pubkey(), true), // Payer (signer)
+                AccountMeta::new(receiver_pubkey, false), // Receiver
+                AccountMeta::new_readonly(system_program::id(),false),
             ],
         );
 
